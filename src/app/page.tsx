@@ -27,7 +27,7 @@ export default function Home() {
       } finally {
         setLoading(false);
       }
-      
+
     };
 
     fetchCaptcha();
@@ -66,7 +66,7 @@ export default function Home() {
 
       <footer className="absolute bottom-4 text-center w-full">
         <a
-          href="https://github.com/rotaptcha/"
+          href="https://github.com/orgs/rotaptcha/repositories"
           target="_blank"
           rel="noopener noreferrer"
           className="text-gray-600 hover:text-teal-600 transition-colors text-sm"
