@@ -8,14 +8,16 @@ export default function Home() {
 
   useEffect(() => {
     const fetchCaptcha = async () => {
+
       try {
+
         setLoading(true);
         const response = await fetch('/api/captcha');
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch captcha');
         }
-        
+
         const data = await response.json();
         setCaptchaImage(data.image);
         setError(null);
@@ -25,6 +27,7 @@ export default function Home() {
       } finally {
         setLoading(false);
       }
+      
     };
 
     fetchCaptcha();
@@ -34,15 +37,15 @@ export default function Home() {
     <div className="flex min-h-screen items-center justify-center bg-zinc-50">
       <div className="text-center">
         <h1 className="mb-8 text-3xl font-bold text-neutral-700">Captcha Testing Demo</h1>
-        
+
         {loading && <p className="text-gray-600">Loading captcha...</p>}
-        
+
         {error && (
           <p className="text-red-600">
             Error: {error}
           </p>
         )}
-        
+
         {captchaImage && (
           <div className="flex justify-center">
             <img
@@ -52,7 +55,7 @@ export default function Home() {
             />
           </div>
         )}
-        
+
         <button
           onClick={() => window.location.reload()}
           className="mt-8 rounded-lg bg-teal-600 px-6 py-2 text-white hover:bg-teal-700"
@@ -60,7 +63,7 @@ export default function Home() {
           Reload
         </button>
       </div>
-      
+
       <footer className="absolute bottom-4 text-center w-full">
         <a
           href="https://github.com/rotaptcha/"
