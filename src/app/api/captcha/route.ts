@@ -6,22 +6,27 @@ import { CreateProps } from "rotaptcha-node/dist/types";
 // GET - Check if slug exists
 export async function GET() {
 
-  const config : CreateProps = {
+  const config: CreateProps = {
     width: 300,
     height: 300,
     noise: true,
-    wobble : false,
-    strokeWidth : 2,
-    maxValue : 150,
+    wobble: false,
+    strokeWidth: 2,
+    maxValue: 150,
     minValue: 30
   };
 
   try {
 
     const image = await rotaptcha.create(config);
-    
+
     return NextResponse.json(
-      { image },
+      {
+        image,
+        radius: 300 * 0.4 * 0.84,
+        maxVal: config.maxValue,
+        minVal: config.minValue
+      },
       { status: 200 }
     );
   } catch (error) {
