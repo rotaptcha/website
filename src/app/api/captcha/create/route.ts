@@ -18,11 +18,12 @@ export async function GET() {
 
   try {
 
-    const image = await rotaptcha.create(config);
+    const result:{image: string, token: string} = await rotaptcha.create(config);
 
     return NextResponse.json(
       {
-        image,
+        image: result.image,
+        token: result.token,
         radius: 300 * 0.4 * 0.84,
         maxVal: config.maxValue,
         minVal: config.minValue

@@ -9,6 +9,11 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
+  const [verifying, setVerifying] = useState(false);
+  const [verificationResult, setVerificationResult] = useState<{
+    success: boolean;
+    message: string;
+  } | null>(null);
 
   useEffect(() => {
     const fetchCaptcha = async () => {
@@ -16,7 +21,7 @@ export default function Home() {
       try {
 
         setLoading(true);
-        const response = await fetch('/api/captcha');
+        const response = await fetch('/api/captcha/create');
 
         if (!response.ok) {
           throw new Error('Failed to fetch captcha');
@@ -56,6 +61,41 @@ export default function Home() {
       drawRotatedCircle(rotation);
     }
   }, [rotation, shapeData]);
+
+  const handleVerify = async () => {
+    if (!shapeData || !shapeData.token) {
+      setError('No captcha data available');
+      return;
+    }
+
+    setVerifying(true);
+    setVerificationResult(null);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/captcha/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: shapeData.token,
+          answer: rotation,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to verify captcha');
+      }
+
+      const result = await response.json();
+      setVerificationResult(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Verification failed');
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   const drawRotatedCircle = useCallback((rotationDegrees: number) => {
     if (!imageRef.current || !canvasRef.current || !shapeData) return;
@@ -143,12 +183,34 @@ export default function Home() {
           </div>
         )}
 
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-8 rounded-lg bg-teal-600 px-6 py-2 text-white hover:bg-teal-700"
-        >
-          Reload
-        </button>
+        <div className="flex gap-4 mt-8">
+          <button
+            onClick={handleVerify}
+            disabled={verifying || !captchaImage}
+            className="rounded-lg bg-blue-600 px-6 py-2 text-white hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            {verifying ? 'Verifying...' : 'Verify'}
+          </button>
+          <button
+            onClick={() => window.location.reload()}
+            className="rounded-lg bg-teal-600 px-6 py-2 text-white hover:bg-teal-700"
+          >
+            Reload
+          </button>
+        </div>
+
+        {verificationResult && (
+          <div className={`mt-4 p-4 rounded-lg ${
+            verificationResult.success 
+              ? 'bg-green-100 text-green-800 border border-green-300' 
+              : 'bg-red-100 text-red-800 border border-red-300'
+          }`}>
+            <p className="font-semibold">
+              {verificationResult.success ? '✓ Success!' : '✗ Failed'}
+            </p>
+            <p className="text-sm">{verificationResult.message}</p>
+          </div>
+        )}
       </div>
 
       <footer className="absolute bottom-4 text-center w-full">
