@@ -3,6 +3,8 @@ import rotaptcha from "rotaptcha-node";
 import { CreateProps } from "rotaptcha-node/dist/types";
 
 
+const secretKey:string = process.env.SECRET_KEY!;
+
 // GET - Check if slug exists
 export async function GET() {
 
@@ -11,9 +13,9 @@ export async function GET() {
     height: 300,
     noise: true,
     wobble: false,
-    strokeWidth: 2,
-    maxValue: 150,
-    minValue: 30
+    maxValue: 90,
+    minValue: 20,
+    secretKey: secretKey
   };
 
   try {
@@ -34,6 +36,35 @@ export async function GET() {
     console.error("Error generating captcha image:", error);
     return NextResponse.json(
       { error: "Failed to generate captcha image" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const { token, answer } = await request.json();
+
+    if (!token || answer === undefined) {
+      return NextResponse.json(
+        { error: "Missing required fields: token and answer" },
+        { status: 400 }
+      );
+    }
+
+    const isValid = await rotaptcha.verify({ token: token, answer: answer, secretKey: secretKey });
+
+    return NextResponse.json(
+      { 
+        success: isValid,
+        message: isValid ? "Captcha verified successfully" : "Invalid captcha answer"
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error verifying captcha:", error);
+    return NextResponse.json(
+      { error: "Failed to verify captcha" },
       { status: 500 }
     );
   }

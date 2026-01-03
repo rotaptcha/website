@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import rotaptcha from "rotaptcha-node";
 
+const secretKey: string = process.env.SECRET_KEY!;
+
 // POST - Verify captcha response
 export async function POST(request: Request) {
   try {
@@ -13,7 +15,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const isValid = await rotaptcha.verify({ uuid: token, answer: answer.toString() });
+    const isValid = await rotaptcha.verify({ token: token, answer: answer, secretKey: secretKey });
 
     return NextResponse.json(
       { 
