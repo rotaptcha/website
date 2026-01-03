@@ -3,7 +3,7 @@ import rotaptcha from "rotaptcha-node";
 import { CreateProps } from "rotaptcha-node/dist/types";
 
 
-const secretKey:string = process.env.SECRET_KEY!;
+const secretKey:string = "abfgdhsetjfn3345uthsdfgshg45y6rt";
 
 // GET - Check if slug exists
 export async function GET() {
