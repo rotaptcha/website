@@ -156,15 +156,15 @@ export default function Home() {
     <div className="min-h-screen bg-[#FFF5F3] flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold text-[#E2552D] mb-3">
+        <div className="text-center mb-6 md:mb-8">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#E2552D] mb-2 md:mb-3">
             Rotaptcha
           </h1>
-          <p className="text-[#8B2E1A] text-lg font-medium">Rotate the inner circle to match the image</p>
+          <p className="text-[#8B2E1A] text-base sm:text-lg font-medium px-4">Rotate the inner circle to match the image</p>
         </div>
 
         {/* Main Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 backdrop-blur-sm bg-opacity-95">
+        <div className="bg-white rounded-xl md:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 backdrop-blur-sm bg-opacity-95">
           {loading && (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mb-4"></div>
@@ -186,33 +186,33 @@ export default function Home() {
           {captchaImage && (
             <div className="flex flex-col items-center gap-8">
               {/* Canvas */}
-              <div className="relative">
+              <div className="relative w-full flex justify-center">
                 <canvas
                   ref={canvasRef}
-                  className="rounded-xl shadow-xl border-4 border-white ring-2 ring-[#F8C4B8]"
+                  className="rounded-lg md:rounded-xl shadow-xl border-2 md:border-4 border-white ring-1 md:ring-2 ring-[#F8C4B8] max-w-full h-auto"
                 />
               </div>
 
               {/* Slider Section */}
-              <div className="w-full space-y-4">
-                <div className="flex items-center justify-center gap-3 mb-2">
-                  <div className="text-sm font-semibold text-[#8B2E1A] uppercase tracking-wide">
+              <div className="w-full space-y-3 md:space-y-4">
+                <div className="flex items-center justify-center gap-2 md:gap-3 mb-2">
+                  <div className="text-xs sm:text-sm font-semibold text-[#8B2E1A] uppercase tracking-wide">
                     Rotation
                   </div>
-                  <div className="px-4 py-2 bg-[#E2552D] text-white rounded-lg font-bold text-lg min-w-[80px] text-center shadow-md">
+                  <div className="px-3 md:px-4 py-1.5 md:py-2 bg-[#E2552D] text-white rounded-lg font-bold text-base md:text-lg min-w-[70px] md:min-w-[80px] text-center shadow-md">
                     {rotation}°
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
                   {/* Left Button */}
                   <button
                     onClick={() => adjustRotation(-10)}
                     disabled={rotation <= -90}
-                    className="flex-shrink-0 w-14 h-14 rounded-full bg-[#E2552D] hover:bg-[#CC4A27] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
+                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#E2552D] hover:bg-[#CC4A27] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
                     aria-label="Rotate left"
                   >
-                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
                     </svg>
                   </button>
@@ -226,7 +226,7 @@ export default function Home() {
                       step={1}
                       value={rotation}
                       onChange={(e) => setRotation(Number(e.target.value))}
-                      className="w-full h-4 rounded-full appearance-none cursor-pointer slider-thumb"
+                      className="w-full h-3 sm:h-4 rounded-full appearance-none cursor-pointer slider-thumb"
                       style={{
                         background: `linear-gradient(to right, 
                           #E2552D 0%, 
@@ -247,10 +247,10 @@ export default function Home() {
                   <button
                     onClick={() => adjustRotation(10)}
                     disabled={rotation >= 90}
-                    className="flex-shrink-0 w-14 h-14 rounded-full bg-[#E2552D] hover:bg-[#CC4A27] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
+                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#E2552D] hover:bg-[#CC4A27] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
                     aria-label="Rotate right"
                   >
-                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
@@ -258,12 +258,12 @@ export default function Home() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-4 w-full">
+              <div className="flex gap-3 md:gap-4 w-full">
                 <button
                   onClick={handleVerify}
                   disabled={verifying || !captchaImage}
-                  className="flex-1 rounded-xl bg-[#E2552D] hover:bg-[#CC4A27] px-8 py-4 text-white font-semibold text-lg disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:hover:translate-y-0"
-                >
+                  className="flex-1 rounded-lg md:rounded-xl bg-[#E2552D] hover:bg-[#CC4A27] px-4 sm:px-6 md:px-8 py-3 md:py-4 text-white font-semibold text-base md:text-lg disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:hover:translate-y-0">
+                
                   {verifying ? (
                     <span className="flex items-center justify-center gap-2">
                       <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
@@ -278,9 +278,9 @@ export default function Home() {
                 </button>
                 <button
                   onClick={() => window.location.reload()}
-                  className="flex-shrink-0 rounded-xl bg-white border-2 border-[#F8C4B8] px-6 py-4 text-[#E2552D] font-semibold hover:border-[#E2552D] hover:bg-[#FFF5F3] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                  className="flex-shrink-0 rounded-lg md:rounded-xl bg-white border-2 border-[#F8C4B8] px-4 sm:px-5 md:px-6 py-3 md:py-4 text-[#E2552D] font-semibold hover:border-[#E2552D] hover:bg-[#FFF5F3] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
                 </button>
@@ -290,23 +290,23 @@ export default function Home() {
 
           {/* Verification Result */}
           {verificationResult && (
-            <div className={`mt-6 p-6 rounded-xl border-2 ${
+            <div className={`mt-4 md:mt-6 p-4 md:p-6 rounded-lg md:rounded-xl border-2 ${
               verificationResult.success 
                 ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-300' 
                 : 'bg-gradient-to-r from-red-50 to-rose-50 border-red-300'
             } shadow-lg transform transition-all duration-300 animate-in`}>
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3 md:gap-4">
                 {verificationResult.success ? (
-                  <svg className="w-8 h-8 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                 ) : (
-                  <svg className="w-8 h-8 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-6 h-6 sm:w-8 sm:h-8 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                   </svg>
                 )}
                 <div>
-                  <p className={`font-bold text-xl mb-1 ${
+                  <p className={`font-bold text-lg sm:text-xl mb-1 ${
                     verificationResult.success ? 'text-green-800' : 'text-red-800'
                   }`}>
                     {verificationResult.success ? 'Success!' : 'Verification Failed'}
@@ -323,7 +323,7 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center">
+        <div className="mt-6 md:mt-8 text-center px-4">
           <a
             href="https://github.com/orgs/rotaptcha/repositories"
             target="_blank"

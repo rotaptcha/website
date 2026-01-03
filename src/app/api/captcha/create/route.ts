@@ -12,7 +12,7 @@ export async function GET() {
     width: 300,
     height: 300,
     noise: true,
-    wobble: false,
+    wobble: true,
     maxValue: 90,
     minValue: 20,
     secretKey: secretKey
