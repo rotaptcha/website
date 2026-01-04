@@ -1,12 +1,27 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+interface CaptchaConfig {
+  width: number;
+  height: number;
+  minValue: number;
+  maxValue: number;
+  step: number;
+  wobbleIntensity: number;
+  noise: boolean;
+  strokeWidth: number;
+  availableColors: string[];
+  canvasBg: string;
+  noiseDensity: number;
+  expiryTime: number;
+}
+
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const [captchaImage, setCaptchaImage] = useState<string | null>(null);
   const [shapeData, setShapeData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
   const [verifying, setVerifying] = useState(false);
@@ -14,10 +29,58 @@ export default function Home() {
     success: boolean;
     message: string;
   } | null>(null);
+  const [showConfig, setShowConfig] = useState(true);
+  const [config, setConfig] = useState<CaptchaConfig>({
+    width: 300,
+    height: 300,
+    minValue: 20,
+    maxValue: 90,
+    step: 10,
+    wobbleIntensity: 2,
+    noise: true,
+    strokeWidth: 2,
+    availableColors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'],
+    canvasBg: '#FFFFFF',
+    noiseDensity: 3,
+    expiryTime: 300000
+  });
 
   const adjustRotation = (delta: number) => {
-    setRotation(prev => Math.max(-90, Math.min(90, prev + delta)));
+    setRotation(prev => Math.max(config.minValue, Math.min(config.maxValue, prev + delta)));
   };
+
+  const fetchCaptcha = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/captcha/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(config),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch captcha');
+      }
+
+      const data = await response.json();
+      setCaptchaImage(data.image);
+      setShapeData(data);
+      setError(null);
+      setRotation(Math.floor((config.maxValue + config.minValue) / 2));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      setCaptchaImage(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfigChange = (key: keyof CaptchaConfig, value: any) => {
+    setConfig(prev => ({ ...prev, [key]: value }));
+  };
+
 
   useEffect(() => {
     const fetchCaptcha = async () => {
@@ -50,7 +113,7 @@ export default function Home() {
 
   useEffect(() => {
     if (captchaImage && canvasRef.current) {
-      const canvas = canvasRef.current;
+     
       const image = new Image();
       image.onload = () => {
         imageRef.current = image;
@@ -141,8 +204,8 @@ export default function Home() {
     // Move to the center of the canvas
     ctx.translate(centerX, centerY);
 
-    // Rotate the canvas
-    const rotationRadians = rotationDegrees * Math.PI / 180;
+    // Rotate the canvas (negative for anticlockwise)
+    const rotationRadians = -rotationDegrees * Math.PI / 180;
     ctx.rotate(rotationRadians);
 
     // Draw only the portion of the image that needs to be rotated
@@ -154,7 +217,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#FFF5F3] flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl">
+      <div className="w-full max-w-4xl">
         {/* Header */}
         <div className="text-center mb-6 md:mb-8">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#E2552D] mb-2 md:mb-3">
@@ -163,8 +226,9 @@ export default function Home() {
           <p className="text-[#8B2E1A] text-base sm:text-lg font-medium px-4">Rotate the inner circle to match the image</p>
         </div>
 
-        {/* Main Card */}
-        <div className="bg-white rounded-xl md:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 backdrop-blur-sm bg-opacity-95">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+          {/* Main Card */}
+          <div className={`${showConfig ? 'lg:col-span-2' : 'lg:col-span-3'} bg-white rounded-xl md:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 backdrop-blur-sm bg-opacity-95`}>
           {loading && (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mb-4"></div>
@@ -207,8 +271,8 @@ export default function Home() {
                 <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
                   {/* Left Button */}
                   <button
-                    onClick={() => adjustRotation(-10)}
-                    disabled={rotation <= -90}
+                    onClick={() => adjustRotation(-config.step)}
+                    disabled={rotation <= config.minValue}
                     className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#E2552D] hover:bg-[#CC4A27] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
                     aria-label="Rotate left"
                   >
@@ -221,32 +285,32 @@ export default function Home() {
                   <div className="flex-1 relative">
                     <input
                       type="range"
-                      min={-90}
-                      max={90}
-                      step={1}
+                      min={config.minValue}
+                      max={config.maxValue}
+                      step={config.step}
                       value={rotation}
                       onChange={(e) => setRotation(Number(e.target.value))}
                       className="w-full h-3 sm:h-4 rounded-full appearance-none cursor-pointer slider-thumb"
                       style={{
                         background: `linear-gradient(to right, 
                           #E2552D 0%, 
-                          #E2552D ${((rotation + 90) / 180) * 100}%, 
-                          #F8C4B8 ${((rotation + 90) / 180) * 100}%, 
+                          #E2552D ${((rotation - config.minValue) / (config.maxValue - config.minValue)) * 100}%, 
+                          #F8C4B8 ${((rotation - config.minValue) / (config.maxValue - config.minValue)) * 100}%, 
                           #F8C4B8 100%)`
                       }}
                     />
                     {/* Tick marks */}
                     <div className="flex justify-between px-1 mt-2">
-                      <span className="text-xs text-gray-400 font-medium">-90°</span>
-                      <span className="text-xs text-gray-400 font-medium">0°</span>
-                      <span className="text-xs text-gray-400 font-medium">+90°</span>
+                      <span className="text-xs text-gray-400 font-medium">{config.minValue}°</span>
+                      <span className="text-xs text-gray-400 font-medium">{Math.floor((config.maxValue + config.minValue) / 2)}°</span>
+                      <span className="text-xs text-gray-400 font-medium">{config.maxValue}°</span>
                     </div>
                   </div>
 
                   {/* Right Button */}
                   <button
-                    onClick={() => adjustRotation(10)}
-                    disabled={rotation >= 90}
+                    onClick={() => adjustRotation(config.step)}
+                    disabled={rotation >= config.maxValue}
                     className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#E2552D] hover:bg-[#CC4A27] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
                     aria-label="Rotate right"
                   >
@@ -259,6 +323,17 @@ export default function Home() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 md:gap-4 w-full">
+                {!showConfig && (
+                  <button
+                    onClick={() => setShowConfig(true)}
+                    className="flex-shrink-0 rounded-lg md:rounded-xl bg-white border-2 border-[#F8C4B8] px-4 sm:px-5 md:px-6 py-3 md:py-4 text-[#E2552D] font-semibold hover:border-[#E2552D] hover:bg-[#FFF5F3] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                  >
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </button>
+                )}
                 <button
                   onClick={handleVerify}
                   disabled={verifying || !captchaImage}
@@ -277,7 +352,7 @@ export default function Home() {
                   )}
                 </button>
                 <button
-                  onClick={() => window.location.reload()}
+                  onClick={fetchCaptcha}
                   className="flex-shrink-0 rounded-lg md:rounded-xl bg-white border-2 border-[#F8C4B8] px-4 sm:px-5 md:px-6 py-3 md:py-4 text-[#E2552D] font-semibold hover:border-[#E2552D] hover:bg-[#FFF5F3] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
                 >
                   <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -320,6 +395,129 @@ export default function Home() {
               </div>
             </div>
           )}
+          </div>
+
+          {/* Configuration Panel */}
+          {showConfig && (
+            <div className="lg:col-span-1 bg-white rounded-xl shadow-lg p-4 md:p-6">
+              <h2 className="text-xl font-bold text-[#E2552D] mb-4">Configuration</h2>
+              <div className="space-y-4 max-h-[600px] overflow-y-auto">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Width (px)</label>
+                  <input
+                    type="number"
+                    value={config.width}
+                    onChange={(e) => handleConfigChange('width', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Height (px)</label>
+                  <input
+                    type="number"
+                    value={config.height}
+                    onChange={(e) => handleConfigChange('height', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Min Value (degrees)</label>
+                  <input
+                    type="number"
+                    value={config.minValue}
+                    onChange={(e) => handleConfigChange('minValue', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Max Value (degrees)</label>
+                  <input
+                    type="number"
+                    value={config.maxValue}
+                    onChange={(e) => handleConfigChange('maxValue', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Step</label>
+                  <input
+                    type="number"
+                    value={config.step}
+                    onChange={(e) => handleConfigChange('step', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Wobble Intensity (1-5)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="5"
+                    value={config.wobbleIntensity}
+                    onChange={(e) => handleConfigChange('wobbleIntensity', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Stroke Width</label>
+                  <input
+                    type="number"
+                    value={config.strokeWidth}
+                    onChange={(e) => handleConfigChange('strokeWidth', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Noise Intensity (1-6)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="6"
+                    value={config.noiseDensity}
+                    onChange={(e) => handleConfigChange('noiseDensity', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Expiry Time (ms)</label>
+                  <input
+                    type="number"
+                    value={config.expiryTime}
+                    onChange={(e) => handleConfigChange('expiryTime', Number(e.target.value))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={config.noise}
+                      onChange={(e) => handleConfigChange('noise', e.target.checked)}
+                      className="w-5 h-5 text-[#E2552D] rounded focus:ring-2 focus:ring-[#E2552D]"
+                    />
+                    <span className="text-sm font-semibold text-gray-700">Enable Noise</span>
+                  </label>
+                </div>
+
+                <button
+                  onClick={fetchCaptcha}
+                  disabled={loading}
+                  className="w-full rounded-lg bg-[#E2552D] hover:bg-[#CC4A27] px-4 py-3 text-white font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  {loading ? 'Generating...' : 'Generate Captcha'}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
@@ -338,5 +536,6 @@ export default function Home() {
         </div>
       </div>
     </div>
+    
   );
 }

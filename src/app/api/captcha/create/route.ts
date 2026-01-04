@@ -3,24 +3,23 @@ import rotaptcha from "rotaptcha-node";
 import { CreateProps } from "rotaptcha-node/dist/types";
 
 
-const secretKey:string = "abfgdhsetjfn3345uthsdfgshg45y6rt";
+const secretKey: string = "abfgdhsetjfn3345uthsdfgshg45y6rt";
 
-// GET - Check if slug exists
+// GET - Default captcha with preset config
 export async function GET() {
 
   const config: CreateProps = {
     width: 300,
     height: 300,
     noise: true,
-    wobble: true,
+    wobbleIntensity: 2,
     maxValue: 90,
-    minValue: 20,
-    secretKey: secretKey
+    minValue: 20
   };
 
   try {
 
-    const result:{image: string, token: string} = await rotaptcha.create(config);
+    const result: { image: string, token: string } = await rotaptcha.create(config, secretKey);
 
     return NextResponse.json(
       {
@@ -41,31 +40,46 @@ export async function GET() {
   }
 }
 
+// POST - Create captcha with custom configuration
 export async function POST(request: Request) {
   try {
-    const { token, answer } = await request.json();
+    const body = await request.json();
+    
+    const config: CreateProps = {
+      width: body.width,
+      height: body.height,
+      minValue: body.minValue,
+      maxValue: body.maxValue,
+      step: body.step,
+      wobbleIntensity: body.wobbleIntensity,
+      noise: body.noise,
+      strokeWidth: body.strokeWidth,
+      availableColors: body.availableColors,
+      canvasBg: body.canvasBg,
+      noiseDensity: body.noiseDensity,
+      expiryTime: body.expiryTime
+    };
 
-    if (!token || answer === undefined) {
-      return NextResponse.json(
-        { error: "Missing required fields: token and answer" },
-        { status: 400 }
-      );
-    }
+    const result: { image: string, token: string } = await rotaptcha.create(config, secretKey);
 
-    const isValid = await rotaptcha.verify({ token: token, answer: answer, secretKey: secretKey });
+    const calculatedRadius = (config.width || 300) * 0.4 * 0.84;
 
     return NextResponse.json(
-      { 
-        success: isValid,
-        message: isValid ? "Captcha verified successfully" : "Invalid captcha answer"
+      {
+        image: result.image,
+        token: result.token,
+        radius: calculatedRadius,
+        maxVal: config.maxValue,
+        minVal: config.minValue
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error verifying captcha:", error);
+    console.error("Error generating captcha image:", error);
     return NextResponse.json(
-      { error: "Failed to verify captcha" },
+      { error: "Failed to generate captcha image" },
       { status: 500 }
     );
   }
 }
+

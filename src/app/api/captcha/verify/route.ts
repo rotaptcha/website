@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const isValid = await rotaptcha.verify({ token: token, answer: answer, secretKey: secretKey });
+    const isValid = await rotaptcha.verify({ token: token, answer: answer }, secretKey);
 
     return NextResponse.json(
       { 
