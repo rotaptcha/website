@@ -147,7 +147,7 @@ export default function Home() {
         },
         body: JSON.stringify({
           token: shapeData.token,
-          answer: Math.abs(rotation),
+          answer: rotation,
         }),
       });
 
@@ -157,8 +157,18 @@ export default function Home() {
 
       const result = await response.json();
       setVerificationResult(result);
+      
+      // Regenerate captcha after verification
+      setTimeout(() => {
+        fetchCaptcha();
+      }, 1000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Verification failed');
+      
+      // Regenerate captcha even on error
+      setTimeout(() => {
+        fetchCaptcha();
+      }, 2000);
     } finally {
       setVerifying(false);
     }
