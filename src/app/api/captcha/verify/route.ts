@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import rotaptcha from "rotaptcha-node";
 
-const secretKey: string = process.env.SECRET_KEY!;
+// const secretKey: string = process.env.SECRET_KEY!;
+
+const secretKey: string = "abfgdhsetjfn3345uthsdfgshg45y6rt";
+
 
 // POST - Verify captcha response
 export async function POST(request: Request) {
