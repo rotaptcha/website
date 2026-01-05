@@ -68,7 +68,10 @@ export default function Home() {
       setCaptchaImage(data.image);
       setShapeData(data);
       setError(null);
-      setRotation(Math.floor((config.maxValue + config.minValue) / 2));
+      
+      setRotation(config.minValue + config.step);
+      // setRotation(Math.floor((config.maxValue - config.minValue) / 2));
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       setCaptchaImage(null);
@@ -81,33 +84,7 @@ export default function Home() {
     setConfig(prev => ({ ...prev, [key]: value }));
   };
 
-
   useEffect(() => {
-    const fetchCaptcha = async () => {
-
-      try {
-
-        setLoading(true);
-        const response = await fetch('/api/captcha/create');
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch captcha');
-        }
-
-        const data = await response.json();
-        setCaptchaImage(data.image);
-        setShapeData(data);
-        setError(null);
-        setRotation(0);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-        setCaptchaImage(null);
-      } finally {
-        setLoading(false);
-      }
-
-    };
-
     fetchCaptcha();
   }, []);
 
@@ -226,14 +203,14 @@ export default function Home() {
   }, [shapeData]);
 
   return (
-    <div className="min-h-screen bg-[#FFF5F3] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#FFF0F5] flex items-center justify-center p-4">
       <div className="w-full max-w-4xl">
         {/* Header */}
         <div className="text-center mb-6 md:mb-8">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#E2552D] mb-2 md:mb-3">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#BB2649] mb-2 md:mb-3">
             Rotaptcha
           </h1>
-          <p className="text-[#8B2E1A] text-base sm:text-lg font-medium px-4">Rotate the inner circle to match the image</p>
+          <p className="text-[#6B1F33] text-base sm:text-lg font-medium px-4">Rotate the inner circle to match the image</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
@@ -263,7 +240,7 @@ export default function Home() {
               <div className="relative w-full flex justify-center">
                 <canvas
                   ref={canvasRef}
-                  className="rounded-lg md:rounded-xl shadow-xl border-2 md:border-4 border-white ring-1 md:ring-2 ring-[#F8C4B8] max-w-full h-auto"
+                  className="rounded-lg md:rounded-xl shadow-xl border-2 md:border-4 border-white ring-1 md:ring-2 ring-[#E8A5B8] max-w-full h-auto"
                 />
               </div>
 
@@ -273,7 +250,7 @@ export default function Home() {
                   <div className="text-xs sm:text-sm font-semibold text-[#8B2E1A] uppercase tracking-wide">
                     Rotation
                   </div>
-                  <div className="px-3 md:px-4 py-1.5 md:py-2 bg-[#E2552D] text-white rounded-lg font-bold text-base md:text-lg min-w-[70px] md:min-w-[80px] text-center shadow-md">
+                  <div className="px-3 md:px-4 py-1.5 md:py-2 bg-[#BB2649] text-white rounded-lg font-bold text-base md:text-lg min-w-[70px] md:min-w-[80px] text-center shadow-md">
                     {rotation}°
                   </div>
                 </div>
@@ -283,7 +260,7 @@ export default function Home() {
                   <button
                     onClick={() => adjustRotation(-config.step)}
                     disabled={rotation <= config.minValue}
-                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#E2552D] hover:bg-[#CC4A27] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
+                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#BB2649] hover:bg-[#9A1F3C] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
                     aria-label="Rotate left"
                   >
                     <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -303,10 +280,10 @@ export default function Home() {
                       className="w-full h-3 sm:h-4 rounded-full appearance-none cursor-pointer slider-thumb"
                       style={{
                         background: `linear-gradient(to right, 
-                          #E2552D 0%, 
-                          #E2552D ${((rotation - config.minValue) / (config.maxValue - config.minValue)) * 100}%, 
-                          #F8C4B8 ${((rotation - config.minValue) / (config.maxValue - config.minValue)) * 100}%, 
-                          #F8C4B8 100%)`
+                          #BB2649 0%, 
+                          #BB2649 ${((rotation - config.minValue) / (config.maxValue - config.minValue)) * 100}%, 
+                          #E8A5B8 ${((rotation - config.minValue) / (config.maxValue - config.minValue)) * 100}%, 
+                          #E8A5B8 100%)`
                       }}
                     />
                     {/* Tick marks */}
@@ -321,7 +298,7 @@ export default function Home() {
                   <button
                     onClick={() => adjustRotation(config.step)}
                     disabled={rotation >= config.maxValue}
-                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#E2552D] hover:bg-[#CC4A27] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
+                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#BB2649] hover:bg-[#9A1F3C] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
                     aria-label="Rotate right"
                   >
                     <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -336,7 +313,7 @@ export default function Home() {
                 {!showConfig && (
                   <button
                     onClick={() => setShowConfig(true)}
-                    className="flex-shrink-0 rounded-lg md:rounded-xl bg-white border-2 border-[#F8C4B8] px-4 sm:px-5 md:px-6 py-3 md:py-4 text-[#E2552D] font-semibold hover:border-[#E2552D] hover:bg-[#FFF5F3] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                    className="flex-shrink-0 rounded-lg md:rounded-xl bg-white border-2 border-[#E8A5B8] px-4 sm:px-5 md:px-6 py-3 md:py-4 text-[#BB2649] font-semibold hover:border-[#BB2649] hover:bg-[#FFF0F5] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
                   >
                     <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -347,7 +324,7 @@ export default function Home() {
                 <button
                   onClick={handleVerify}
                   disabled={verifying || !captchaImage}
-                  className="flex-1 rounded-lg md:rounded-xl bg-[#E2552D] hover:bg-[#CC4A27] px-4 sm:px-6 md:px-8 py-3 md:py-4 text-white font-semibold text-base md:text-lg disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:hover:translate-y-0">
+                  className="flex-1 rounded-lg md:rounded-xl bg-[#BB2649] hover:bg-[#9A1F3C] px-4 sm:px-6 md:px-8 py-3 md:py-4 text-white font-semibold text-base md:text-lg disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:hover:translate-y-0">
                 
                   {verifying ? (
                     <span className="flex items-center justify-center gap-2">
@@ -363,7 +340,7 @@ export default function Home() {
                 </button>
                 <button
                   onClick={fetchCaptcha}
-                  className="flex-shrink-0 rounded-lg md:rounded-xl bg-white border-2 border-[#F8C4B8] px-4 sm:px-5 md:px-6 py-3 md:py-4 text-[#E2552D] font-semibold hover:border-[#E2552D] hover:bg-[#FFF5F3] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                  className="flex-shrink-0 rounded-lg md:rounded-xl bg-white border-2 border-[#E8A5B8] px-4 sm:px-5 md:px-6 py-3 md:py-4 text-[#BB2649] font-semibold hover:border-[#BB2649] hover:bg-[#FFF0F5] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
                 >
                   <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -410,7 +387,7 @@ export default function Home() {
           {/* Configuration Panel */}
           {showConfig && (
             <div className="lg:col-span-1 bg-white rounded-xl shadow-lg p-4 md:p-6">
-              <h2 className="text-xl font-bold text-[#E2552D] mb-4">Configuration</h2>
+              <h2 className="text-xl font-bold text-[#BB2649] mb-4">Configuration</h2>
               <div className="space-y-4 max-h-[600px] overflow-y-auto">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">Width (px)</label>
@@ -418,7 +395,7 @@ export default function Home() {
                     type="number"
                     value={config.width}
                     onChange={(e) => handleConfigChange('width', Number(e.target.value))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#BB2649] focus:border-transparent text-gray-900"
                   />
                 </div>
 
@@ -428,7 +405,7 @@ export default function Home() {
                     type="number"
                     value={config.height}
                     onChange={(e) => handleConfigChange('height', Number(e.target.value))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#BB2649] focus:border-transparent text-gray-900"
                   />
                 </div>
 
@@ -438,7 +415,7 @@ export default function Home() {
                     type="number"
                     value={config.minValue}
                     onChange={(e) => handleConfigChange('minValue', Number(e.target.value))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#BB2649] focus:border-transparent text-gray-900"
                   />
                 </div>
 
@@ -448,7 +425,7 @@ export default function Home() {
                     type="number"
                     value={config.maxValue}
                     onChange={(e) => handleConfigChange('maxValue', Number(e.target.value))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#BB2649] focus:border-transparent text-gray-900"
                   />
                 </div>
 
@@ -458,7 +435,7 @@ export default function Home() {
                     type="number"
                     value={config.step}
                     onChange={(e) => handleConfigChange('step', Number(e.target.value))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#BB2649] focus:border-transparent text-gray-900"
                   />
                 </div>
 
@@ -470,7 +447,7 @@ export default function Home() {
                     max="5"
                     value={config.wobbleIntensity}
                     onChange={(e) => handleConfigChange('wobbleIntensity', Number(e.target.value))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#BB2649] focus:border-transparent text-gray-900"
                   />
                 </div>
 
@@ -480,7 +457,7 @@ export default function Home() {
                     type="number"
                     value={config.strokeWidth}
                     onChange={(e) => handleConfigChange('strokeWidth', Number(e.target.value))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#BB2649] focus:border-transparent text-gray-900"
                   />
                 </div>
 
@@ -492,7 +469,7 @@ export default function Home() {
                     max="6"
                     value={config.noiseDensity}
                     onChange={(e) => handleConfigChange('noiseDensity', Number(e.target.value))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#BB2649] focus:border-transparent text-gray-900"
                   />
                 </div>
 
@@ -502,7 +479,7 @@ export default function Home() {
                     type="number"
                     value={config.expiryTime}
                     onChange={(e) => handleConfigChange('expiryTime', Number(e.target.value))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E2552D] focus:border-transparent text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#BB2649] focus:border-transparent text-gray-900"
                   />
                 </div>
 
@@ -512,7 +489,7 @@ export default function Home() {
                       type="checkbox"
                       checked={config.noise}
                       onChange={(e) => handleConfigChange('noise', e.target.checked)}
-                      className="w-5 h-5 text-[#E2552D] rounded focus:ring-2 focus:ring-[#E2552D]"
+                      className="w-5 h-5 text-[#BB2649] rounded focus:ring-2 focus:ring-[#BB2649]"
                     />
                     <span className="text-sm font-semibold text-gray-700">Enable Noise</span>
                   </label>
@@ -521,7 +498,7 @@ export default function Home() {
                 <button
                   onClick={fetchCaptcha}
                   disabled={loading}
-                  className="w-full rounded-lg bg-[#E2552D] hover:bg-[#CC4A27] px-4 py-3 text-white font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                  className="w-full rounded-lg bg-[#BB2649] hover:bg-[#9A1F3C] px-4 py-3 text-white font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                 >
                   {loading ? 'Generating...' : 'Generate Captcha'}
                 </button>
@@ -536,7 +513,7 @@ export default function Home() {
             href="https://github.com/orgs/rotaptcha/repositories"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-[#8B2E1A] hover:text-[#E2552D] transition-colors font-medium"
+            className="inline-flex items-center gap-2 text-[#6B1F33] hover:text-[#BB2649] transition-colors font-medium"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
