@@ -68,7 +68,7 @@ export default function Home() {
       setCaptchaImage(data.image);
       setShapeData(data);
       setError(null);
-      
+
       setRotation(config.minValue + config.step);
       // setRotation(Math.floor((config.maxValue - config.minValue) / 2));
 
@@ -90,7 +90,7 @@ export default function Home() {
 
   useEffect(() => {
     if (captchaImage && canvasRef.current) {
-     
+
       const image = new Image();
       image.onload = () => {
         imageRef.current = image;
@@ -134,14 +134,14 @@ export default function Home() {
 
       const result = await response.json();
       setVerificationResult(result);
-      
+
       // Regenerate captcha after verification
       setTimeout(() => {
         fetchCaptcha();
       }, 1000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Verification failed');
-      
+
       // Regenerate captcha even on error
       setTimeout(() => {
         fetchCaptcha();
@@ -211,177 +211,177 @@ export default function Home() {
             Rotaptcha
           </h1>
           <p className="text-[#6B1F33] text-base sm:text-lg font-medium px-4">Rotate the inner circle to match the image</p>
+          <p className="text-[#6B1F33] text-base sm:text-lg font-medium px-4">
+            Language Agnostic CAPTCHA Test inspired from Jquery's Slider CAPTCHA
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Main Card */}
           <div className={`${showConfig ? 'lg:col-span-2' : 'lg:col-span-3'} bg-white rounded-xl md:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 backdrop-blur-sm bg-opacity-95`}>
-          {loading && (
-            <div className="flex flex-col items-center justify-center py-20">
-              <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mb-4"></div>
-              <p className="text-gray-600 text-lg">Loading captcha...</p>
-            </div>
-          )}
-
-          {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 mb-6">
-              <div className="flex items-center">
-                <svg className="w-6 h-6 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-                <p className="text-red-700 font-medium">Error: {error}</p>
+            {loading && (
+              <div className="flex flex-col items-center justify-center py-20">
+                <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mb-4"></div>
+                <p className="text-gray-600 text-lg">Loading captcha...</p>
               </div>
-            </div>
-          )}
+            )}
 
-          {captchaImage && (
-            <div className="flex flex-col items-center gap-8">
-              {/* Canvas */}
-              <div className="relative w-full flex justify-center">
-                <canvas
-                  ref={canvasRef}
-                  className="rounded-lg md:rounded-xl shadow-xl border-2 md:border-4 border-white ring-1 md:ring-2 ring-[#E8A5B8] max-w-full h-auto"
-                />
-              </div>
-
-              {/* Slider Section */}
-              <div className="w-full space-y-3 md:space-y-4">
-                <div className="flex items-center justify-center gap-2 md:gap-3 mb-2">
-                  <div className="text-xs sm:text-sm font-semibold text-[#8B2E1A] uppercase tracking-wide">
-                    Rotation
-                  </div>
-                  <div className="px-3 md:px-4 py-1.5 md:py-2 bg-[#BB2649] text-white rounded-lg font-bold text-base md:text-lg min-w-[70px] md:min-w-[80px] text-center shadow-md">
-                    {rotation}°
-                  </div>
+            {error && (
+              <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 mb-6">
+                <div className="flex items-center">
+                  <svg className="w-6 h-6 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <p className="text-red-700 font-medium">Error: {error}</p>
                 </div>
-                
-                <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-                  {/* Left Button */}
-                  <button
-                    onClick={() => adjustRotation(-config.step)}
-                    disabled={rotation <= config.minValue}
-                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#BB2649] hover:bg-[#9A1F3C] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
-                    aria-label="Rotate left"
-                  >
-                    <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
+              </div>
+            )}
 
-                  {/* Slider */}
-                  <div className="flex-1 relative">
-                    <input
-                      type="range"
-                      min={config.minValue}
-                      max={config.maxValue}
-                      step={config.step}
-                      value={rotation}
-                      onChange={(e) => setRotation(Number(e.target.value))}
-                      className="w-full h-3 sm:h-4 rounded-full appearance-none cursor-pointer slider-thumb"
-                      style={{
-                        background: `linear-gradient(to right, 
+            {captchaImage && (
+              <div className="flex flex-col items-center gap-8">
+                {/* Canvas */}
+                <div className="relative w-full flex justify-center">
+                  <canvas
+                    ref={canvasRef}
+                    className="rounded-lg md:rounded-xl shadow-xl border-2 md:border-4 border-white ring-1 md:ring-2 ring-[#E8A5B8] max-w-full h-auto"
+                  />
+                </div>
+
+                {/* Slider Section */}
+                <div className="w-full space-y-3 md:space-y-4">
+                  <div className="flex items-center justify-center gap-2 md:gap-3 mb-2">
+                    <div className="text-xs sm:text-sm font-semibold text-[#8B2E1A] uppercase tracking-wide">
+                      Rotation
+                    </div>
+                    <div className="px-3 md:px-4 py-1.5 md:py-2 bg-[#BB2649] text-white rounded-lg font-bold text-base md:text-lg min-w-[70px] md:min-w-[80px] text-center shadow-md">
+                      {rotation}°
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+                    {/* Left Button */}
+                    <button
+                      onClick={() => adjustRotation(-config.step)}
+                      disabled={rotation <= config.minValue}
+                      className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#BB2649] hover:bg-[#9A1F3C] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
+                      aria-label="Rotate left"
+                    >
+                      <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+
+                    {/* Slider */}
+                    <div className="flex-1 relative">
+                      <input
+                        type="range"
+                        min={config.minValue}
+                        max={config.maxValue}
+                        step={config.step}
+                        value={rotation}
+                        onChange={(e) => setRotation(Number(e.target.value))}
+                        className="w-full h-3 sm:h-4 rounded-full appearance-none cursor-pointer slider-thumb"
+                        style={{
+                          background: `linear-gradient(to right, 
                           #BB2649 0%, 
                           #BB2649 ${((rotation - config.minValue) / (config.maxValue - config.minValue)) * 100}%, 
                           #E8A5B8 ${((rotation - config.minValue) / (config.maxValue - config.minValue)) * 100}%, 
                           #E8A5B8 100%)`
-                      }}
-                    />
-                    {/* Tick marks */}
-                    <div className="flex justify-between px-1 mt-2">
-                      <span className="text-xs text-gray-400 font-medium">{config.minValue}°</span>
-                      <span className="text-xs text-gray-400 font-medium">{Math.floor((config.maxValue + config.minValue) / 2)}°</span>
-                      <span className="text-xs text-gray-400 font-medium">{config.maxValue}°</span>
+                        }}
+                      />
+                      {/* Tick marks */}
+                      <div className="flex justify-between px-1 mt-2">
+                        <span className="text-xs text-gray-400 font-medium">{config.minValue}°</span>
+                        <span className="text-xs text-gray-400 font-medium">{Math.floor((config.maxValue + config.minValue) / 2)}°</span>
+                        <span className="text-xs text-gray-400 font-medium">{config.maxValue}°</span>
+                      </div>
                     </div>
+
+                    {/* Right Button */}
+                    <button
+                      onClick={() => adjustRotation(config.step)}
+                      disabled={rotation >= config.maxValue}
+                      className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#BB2649] hover:bg-[#9A1F3C] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
+                      aria-label="Rotate right"
+                    >
+                      <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
                   </div>
-
-                  {/* Right Button */}
-                  <button
-                    onClick={() => adjustRotation(config.step)}
-                    disabled={rotation >= config.maxValue}
-                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#BB2649] hover:bg-[#9A1F3C] text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center font-bold text-2xl"
-                    aria-label="Rotate right"
-                  >
-                    <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
                 </div>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="flex gap-3 md:gap-4 w-full">
-                {!showConfig && (
+                {/* Action Buttons */}
+                <div className="flex gap-3 md:gap-4 w-full">
+                  {!showConfig && (
+                    <button
+                      onClick={() => setShowConfig(true)}
+                      className="flex-shrink-0 rounded-lg md:rounded-xl bg-white border-2 border-[#E8A5B8] px-4 sm:px-5 md:px-6 py-3 md:py-4 text-[#BB2649] font-semibold hover:border-[#BB2649] hover:bg-[#FFF0F5] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                    >
+                      <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </button>
+                  )}
                   <button
-                    onClick={() => setShowConfig(true)}
+                    onClick={handleVerify}
+                    disabled={verifying || !captchaImage}
+                    className="flex-1 rounded-lg md:rounded-xl bg-[#BB2649] hover:bg-[#9A1F3C] px-4 sm:px-6 md:px-8 py-3 md:py-4 text-white font-semibold text-base md:text-lg disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:hover:translate-y-0">
+
+                    {verifying ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Verifying...
+                      </span>
+                    ) : (
+                      'Verify'
+                    )}
+                  </button>
+                  <button
+                    onClick={fetchCaptcha}
                     className="flex-shrink-0 rounded-lg md:rounded-xl bg-white border-2 border-[#E8A5B8] px-4 sm:px-5 md:px-6 py-3 md:py-4 text-[#BB2649] font-semibold hover:border-[#BB2649] hover:bg-[#FFF0F5] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
                   >
                     <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                   </button>
-                )}
-                <button
-                  onClick={handleVerify}
-                  disabled={verifying || !captchaImage}
-                  className="flex-1 rounded-lg md:rounded-xl bg-[#BB2649] hover:bg-[#9A1F3C] px-4 sm:px-6 md:px-8 py-3 md:py-4 text-white font-semibold text-base md:text-lg disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:hover:translate-y-0">
-                
-                  {verifying ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Verifying...
-                    </span>
-                  ) : (
-                    'Verify'
-                  )}
-                </button>
-                <button
-                  onClick={fetchCaptcha}
-                  className="flex-shrink-0 rounded-lg md:rounded-xl bg-white border-2 border-[#E8A5B8] px-4 sm:px-5 md:px-6 py-3 md:py-4 text-[#BB2649] font-semibold hover:border-[#BB2649] hover:bg-[#FFF0F5] shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
-                >
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Verification Result */}
-          {verificationResult && (
-            <div className={`mt-4 md:mt-6 p-4 md:p-6 rounded-lg md:rounded-xl border-2 ${
-              verificationResult.success 
-                ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-300' 
-                : 'bg-gradient-to-r from-red-50 to-rose-50 border-red-300'
-            } shadow-lg transform transition-all duration-300 animate-in`}>
-              <div className="flex items-start gap-3 md:gap-4">
-                {verificationResult.success ? (
-                  <svg className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                ) : (
-                  <svg className="w-6 h-6 sm:w-8 sm:h-8 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                )}
-                <div>
-                  <p className={`font-bold text-lg sm:text-xl mb-1 ${
-                    verificationResult.success ? 'text-green-800' : 'text-red-800'
-                  }`}>
-                    {verificationResult.success ? 'Success!' : 'Verification Failed'}
-                  </p>
-                  <p className={`${
-                    verificationResult.success ? 'text-green-700' : 'text-red-700'
-                  }`}>
-                    {verificationResult.message}
-                  </p>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+
+            {/* Verification Result */}
+            {verificationResult && (
+              <div className={`mt-4 md:mt-6 p-4 md:p-6 rounded-lg md:rounded-xl border-2 ${verificationResult.success
+                ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-300'
+                : 'bg-gradient-to-r from-red-50 to-rose-50 border-red-300'
+                } shadow-lg transform transition-all duration-300 animate-in`}>
+                <div className="flex items-start gap-3 md:gap-4">
+                  {verificationResult.success ? (
+                    <svg className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-6 h-6 sm:w-8 sm:h-8 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                  <div>
+                    <p className={`font-bold text-lg sm:text-xl mb-1 ${verificationResult.success ? 'text-green-800' : 'text-red-800'
+                      }`}>
+                      {verificationResult.success ? 'Success!' : 'Verification Failed'}
+                    </p>
+                    <p className={`${verificationResult.success ? 'text-green-700' : 'text-red-700'
+                      }`}>
+                      {verificationResult.message}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Configuration Panel */}
@@ -523,6 +523,6 @@ export default function Home() {
         </div>
       </div>
     </div>
-    
+
   );
 }
