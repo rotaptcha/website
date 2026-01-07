@@ -210,7 +210,7 @@ export default function Home() {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#BB2649] mb-2 md:mb-3">
             Rotaptcha
           </h1>
-          <p className="text-[#6B1F33] text-base sm:text-lg font-medium px-4">Rotate the inner circle to match the image</p>
+          {/* <p className="text-[#6B1F33] text-base sm:text-lg font-medium px-4">Rotate the inner circle to match the image</p> */}
           <p className="text-[#6B1F33] text-base sm:text-lg font-medium px-4">
             Language Agnostic CAPTCHA Test inspired from Jquery's Slider CAPTCHA
           </p>
