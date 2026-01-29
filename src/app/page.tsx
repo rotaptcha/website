@@ -334,7 +334,6 @@ export default function Home() {
     wobbleIntensity: 2,
     noise: true,
     strokeWidth: 2,
-    canvasBg: '#FFFFFF',
     noiseDensity: 3,
     expiryTime: 300000
   };
@@ -351,120 +350,162 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center p-4">
-      {/* Header */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-800 mb-3">
-          Rotaptcha
-        </h1>
-        <p className="text-gray-600 text-base sm:text-lg font-medium px-4 max-w-xl">
-          A modern, rotation-based CAPTCHA system. Click the checkbox below to verify.
-        </p>
-      </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8">
+      {/* Main Container */}
+      <div className="w-full max-w-5xl">
+        {/* Header Section */}
+        <div className="text-center mb-16">
 
-      {/* Captcha Widget */}
-      <RotaptchaWidget
-        createUrl="/api/captcha/create"
-        verifyUrl="/api/captcha/verify"
-        config={config}
-        autoRegenerate={false}
-        onVerifySuccess={(result) => {
-          console.log('Captcha verified successfully:', result);
-        }}
-        onVerifyFailure={(result) => {
-          console.log('Captcha verification failed:', result);
-        }}
-        onError={(error) => {
-          console.error('Captcha error:', error);
-        }}
-        theme={{
-          primary: '#4285f4',
-          primaryHover: '#3367d6',
-          secondary: '#e8f0fe',
-          background: '#f8f9fa',
-        }}
-      />
-
-      {/* Code Example */}
-      <div className="mt-12 w-full max-w-3xl px-4">
-        <div className="bg-gray-900 rounded-lg overflow-hidden shadow-xl">
-          {/* Tabs Header */}
-          <div className="flex items-center justify-between bg-gray-800 border-b border-gray-700">
-            <div className="flex">
-              <button
-                onClick={() => setActiveTab('widget')}
-                className={`px-4 py-2.5 text-sm font-medium transition-colors ${
-                  activeTab === 'widget'
-                    ? 'text-white bg-gray-900'
-                    : 'text-gray-400 hover:text-gray-200'
-                }`}
-              >
-                Widget Component
-              </button>
-              <button
-                onClick={() => setActiveTab('usage')}
-                className={`px-4 py-2.5 text-sm font-medium transition-colors ${
-                  activeTab === 'usage'
-                    ? 'text-white bg-gray-900'
-                    : 'text-gray-400 hover:text-gray-200'
-                }`}
-              >
-                Usage
-              </button>
+          {/* Logo/Title with decorative elements */}
+          <div className="inline-flex items-center justify-center mb-6">
+           
+            <div className="relative">
+              <h1 className="text-4xl sm:text-4xl md:text-4xl font-bold text-lime-700 ">
+                Rotaptcha
+              </h1>
             </div>
-            <button
-              onClick={handleCopy}
-              className="flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors text-sm px-3 py-1.5 mr-2 rounded hover:bg-gray-700 cursor-pointer"
-            >
-              {copied ? (
-                <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                  Copy
-                </>
-              )}
-            </button>
           </div>
 
-          {/* Code Content */}
-          <div className="max-h-96 overflow-auto">
-            <pre className="p-4 text-sm">
-              <code className={activeTab === 'usage' ? 'language-jsx' : 'language-javascript'}>
-                {activeTab === 'usage' ? usageCode : widgetCode}
-              </code>
-            </pre>
+          <p className="text-gray-500 text-base sm:text-base mb-2 px-4">
+            Language Agnostic Gamified CAPTCHA Test
+          </p>
+
+          <p className="text-gray-500 text-base sm:text-base mt-2 px-4">
+            Secure, Simple, and User-Friendly Verification
+          </p>
+
+        </div>
+
+        {/* Demo Section with Card */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 sm:p-12 mb-12">
+          <div className="flex flex-col items-center">
+            <div className="mb-6">
+              <span className="inline-block px-4 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full border border-gray-300">
+                LIVE DEMO
+              </span>
+            </div>
+
+            {/* Captcha Widget */}
+            <RotaptchaWidget
+              createUrl="/api/captcha/create"
+              verifyUrl="/api/captcha/verify"
+              config={config}
+              autoRegenerate={false}
+              onVerifySuccess={(result) => {
+                console.log('Captcha verified successfully:', result);
+              }}
+              onVerifyFailure={(result) => {
+                console.log('Captcha verification failed:', result);
+              }}
+              onError={(error) => {
+                console.error('Captcha error:', error);
+              }}
+              theme={{
+                primary: '#88B04B',
+                primaryHover: '#6a8c3a',
+                secondary: '#e8f0fe',
+                background: '#f8f9fa',
+              }}
+            />
+
+            <p className="mt-6 text-gray-500 text-sm">
+              Click the checkbox above to try the verification
+            </p>
           </div>
         </div>
-        
-        {activeTab === 'widget' && (
-          <p className="mt-3 text-sm text-gray-500 text-center">
-            Save this as <code className="bg-gray-200 px-1.5 py-0.5 rounded text-gray-700">components/RotaptchaWidget.tsx</code>
-          </p>
-        )}
-      </div>
 
-      {/* Footer */}
-      <div className="mt-12 text-center px-4">
-        <a
-          href="https://github.com/orgs/rotaptcha/repositories"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors font-medium"
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-            <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-          </svg>
-          View on GitHub
-        </a>
+        {/* Code Example */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-lime-900 mb-2">Implementation</h2>
+            <p className="text-gray-600">Get started with Rotaptcha in minutes</p>
+          </div>
+
+          <div className="bg-gray-900 rounded-xl overflow-hidden shadow-sm border border-gray-800">
+            <div className="bg-gray-900 rounded-xl overflow-hidden shadow-sm border border-gray-800">
+              {/* Tabs Header */}
+              <div className="flex items-center justify-between bg-gray-800 border-b border-gray-700">
+                <div className="flex">
+                  <button
+                    onClick={() => setActiveTab('widget')}
+                    className={`px-5 py-3 text-sm font-medium transition-colors ${activeTab === 'widget'
+                      ? 'text-white bg-gray-900 border-b-2 border-white'
+                      : 'text-gray-400 hover:text-gray-200 hover:bg-gray-750'
+                      }`}
+                  >
+                    Widget Component
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('usage')}
+                    className={`px-5 py-3 text-sm font-medium transition-colors ${activeTab === 'usage'
+                      ? 'text-white bg-gray-900 border-b-2 border-white'
+                      : 'text-gray-400 hover:text-gray-200 hover:bg-gray-750'
+                      }`}
+                  >
+                    Usage
+                  </button>
+                </div>
+                <button
+                  onClick={handleCopy}
+                  className="flex items-center gap-2 text-gray-400 hover:text-white hover:bg-gray-700 transition-all text-sm px-4 py-2 mr-2 rounded cursor-pointer"
+                >
+                  {copied ? (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      Copy
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Code Content */}
+              <div className="max-h-96 overflow-auto">
+                <pre className="p-6 text-sm">
+                  <code className={activeTab === 'usage' ? 'language-jsx' : 'language-javascript'}>
+                    {activeTab === 'usage' ? usageCode : widgetCode}
+                  </code>
+                </pre>
+              </div>
+            </div>
+
+            {activeTab === 'widget' && (
+              <p className="mt-4 text-sm text-gray-500 px-2">
+                Save this as <code className="bg-gray-100 px-2 py-1 rounded text-gray-700 font-mono text-xs border border-gray-200">components/RotaptchaWidget.tsx</code>
+              </p>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="mt-16 pt-8 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-gray-500 text-sm">
+                Built with Next.js and TypeScript
+              </div>
+              <a
+                href="https://github.com/orgs/rotaptcha/repositories"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium text-sm border border-gray-800"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                </svg>
+                View on GitHub
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
   );
 }

@@ -10,8 +10,6 @@ export interface CaptchaConfig {
   wobbleIntensity?: number;
   noise?: boolean;
   strokeWidth?: number;
-  availableColors?: string[];
-  canvasBg?: string;
   noiseDensity?: number;
   expiryTime?: number;
 }
@@ -76,8 +74,6 @@ const DEFAULT_CONFIG: Required<CaptchaConfig> = {
   wobbleIntensity: 2,
   noise: true,
   strokeWidth: 2,
-  availableColors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'],
-  canvasBg: '#FFFFFF',
   noiseDensity: 3,
   expiryTime: 300000,
 };
